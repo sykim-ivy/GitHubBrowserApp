@@ -7,7 +7,7 @@
     <data>
 
         <import type="android.view.View"/>
-
+        <!-- (AAC DataBiding을 통해) AAC ViewModel을 변수로 가짐 [syk] -->
         <variable
             name="viewModel"
             type="com.omjoonkim.app.githubBrowserApp.viewmodel.SearchViewModel"
@@ -40,6 +40,11 @@
             android:onTextChanged='@{(s,start,end,before) -> viewModel.input.name(s.toString ?? "")}'
             />
 
+        <!-- [syk]
+            android:onTextChanged='@{(s,start,end,before) -> viewModel.input.name(s.toString ?? "")}'
+             : Text의 값이 변경되었을 떄  viewModel.input.name에 EditText의 입력값 전달
+        -->
+
         <Button
             android:id="@+id/button_search"
             android:layout_width="match_parent"
@@ -48,5 +53,14 @@
             android:onClick="@{(v) -> viewModel.input.clickSearchButton()}"
             android:text="search"
             />
+        <!-- [syk]
+            android:enabled="@{viewModel.output.state().enableSearchButton}"
+             : enabled여부를 viewModel.output.state().enableSearchButton값에 따라 변경시킴
+             - state() 리턴값이 LiveData이므로 state값이 변경되었을 떄 View가 곧바로 notify받어 동작함
+        -->
+        <!-- [syk]
+            android:onClick="@{(v) -> viewModel.input.clickSearchButton()}"
+             : click 이벤트 받았을 떄 viewModel.input.clickSearchButton() 동작시킴
+        -->
     </LinearLayout>
 </layout>
