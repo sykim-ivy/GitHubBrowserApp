@@ -26,7 +26,7 @@ import org.koin.dsl.module
 
 val myModule: Module = module {
     //presentation레이어
-    /**
+    /** [syk]
      * 'viewModel' : Koin 지원 AAC ViewModel 키워드
      * - AAC ViewModel은
      *    Activity나 Fragment에서 ViewModel을 저장하는 인터페이스를 가질 수 있고,
@@ -42,7 +42,7 @@ val myModule: Module = module {
     single { AppSchedulerProvider() as SchedulersProvider }
 
     //domain레이어
-    /**
+    /** [syk]
      * 2) 이는 domain레이어에서 'SchedulersProvider'가 구현되어 있으며,
      *    이 객체는 바깥의 app레이어에서 구현한 'SchedulersProvider'를 넘겨받은 것이다.(<<의존의 역전 구현)
      */
