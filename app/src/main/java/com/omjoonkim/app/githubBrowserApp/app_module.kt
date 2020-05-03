@@ -1,5 +1,6 @@
 package com.omjoonkim.app.githubBrowserApp
 
+import androidx.databinding.library.BuildConfig
 import com.omjoonkim.app.githubBrowserApp.ui.repo.RepoDetailPresenter
 import com.omjoonkim.app.githubBrowserApp.ui.repo.RepoDetailView
 import com.omjoonkim.app.githubBrowserApp.viewmodel.MainViewModel
@@ -24,25 +25,36 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val myModule: Module = module {
-    //presentation
+    //presentation레이어
+    /**
+     * 'viewModel' : Koin 지원 AAC ViewModel 키워드
+     * - AAC ViewModel은
+     *    Activity나 Fragment에서 ViewModel을 저장하는 인터페이스를 가질 수 있고,
+     *   이런 것들에 따라 savedinstances나 앱이 다시 켜질 때, Map에 캐싱되어 있는 ViewModel을 가져오도록 안드로이드가 구현되어 있고
+     *   이걸 도와주도록 하는 코드 ↓
+     */
     viewModel { (id: String) -> MainViewModel(id, get(), get()) }
     viewModel { SearchViewModel(get()) }
     factory { (view: RepoDetailView) -> RepoDetailPresenter(view, get()) }
 
-    //app
+    //app레이어
     single { Logger() }
     single { AppSchedulerProvider() as SchedulersProvider }
 
-    //domain
-    factory { GetUserData(get(), get(), get()) }
+    //domain레이어
+    /**
+     * 2) 이는 domain레이어에서 'SchedulersProvider'가 구현되어 있으며,
+     *    이 객체는 바깥의 app레이어에서 구현한 'SchedulersProvider'를 넘겨받은 것이다.(<<의존의 역전 구현)
+     */
+    factory { GetUserData(get(), get(), get()) } // 1) GetUserData 생성자 파라미터 중 3번째 값이 'SchedulersProvider'이다.
     factory { GetRepoDetail(get(), get(), get()) }
 
-    //data
+    //data레이어
     single { UserDataRepository(get()) as UserRepository }
     single { RepoDataRepository(get()) as RepoRepository }
     single { ForkDataRepository(get()) as ForkRepository }
 
-    //remote
+    //remote레이어
     single { GithubBrowserRemoteImpl(get(), get(), get(), get()) as GithubBrowserRemote }
     single { RepoEntityMapper() }
     single { UserEntityMapper() }
