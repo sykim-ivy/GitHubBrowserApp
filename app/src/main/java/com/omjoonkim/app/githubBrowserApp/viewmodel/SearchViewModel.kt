@@ -31,7 +31,7 @@ class SearchViewModel(
     private val state = MutableLiveData<SearchViewState>()
     private val goResultActivity = MutableLiveData<String>()
     val output = object : SearchViewModelOutPuts {
-        override fun state() = state
+        override fun state() = state //[syk][fp] 함수 몸체가 식인 경우 return 생략 가능, return type이 추론됨
         override fun goResultActivity() = goResultActivity
     }
 

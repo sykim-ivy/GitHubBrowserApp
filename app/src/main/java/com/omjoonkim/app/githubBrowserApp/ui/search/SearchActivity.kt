@@ -28,7 +28,7 @@ class SearchActivity : BaseActivity() {
         binding.viewModel = viewModel
 
         // [syk] Router 부분 : 검색시 이름값을 전달받아 ResultActivity로 이동
-        viewModel.output.goResultActivity() // [syk] LiveData를 Observe하므로 ViewModel이 clear || View가 종료 시 해당 stream도 종료됨
+        viewModel.output.goResultActivity() // [syk] LiveData를 .observe하므로 ViewModel이 clear || View가 종료 시 해당 stream도 종료됨
             .observe {
                 keyboardController.hideSoftInputFromWindow(binding.editText.windowToken, 0)
                 startActivity(
