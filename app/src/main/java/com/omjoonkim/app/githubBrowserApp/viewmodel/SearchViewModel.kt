@@ -13,11 +13,11 @@ class SearchViewModel(
     /**
      * Propertiest 구성 [syk]
      * - 'input'이라는 InPut 인터페이스를 구현한 객체
-     * - name, clickSearchButton :// TODO study : RxJava PublishSubject
+     * - name, clickSearchButton : 누군가 자신을 subscribe하지 않아도 결과를 발행하는 'Subject' (cf. Observable)이며, subscribe()한 시점 이후 결과만 받는 'PublishSubject'
      * - 'output'이라는 OutPut 인터페이스를 구현한 객체
      * - state, goResultActivity : private로 가려져 있고, output의 함수들의 리턴타입은 'LiveData'이다. >> 내가 가진 데이터를 외부에서 변경하지 않도록 막은 조치 [syk]
      */
-    private val name = PublishSubject.create<String>() // TODO study : RxJava PublishSubject
+    private val name = PublishSubject.create<String>()
     private val clickSearchButton = PublishSubject.create<Parameter>()
     val input = object : SearchViewModelInPuts {
         // input 메서드 호출 시 내가가진 subject의 해당 input값을 방출???? >> ViewModel이 Biding될 떄 모든 로직이 정해져 있다.
