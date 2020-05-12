@@ -19,23 +19,35 @@ import com.omjoonkim.project.githubBrowser.domain.entity.User
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 
-class MainActivity : BaseActivity() {
+class  MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // [syk][DataBiding]
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         binding.setLifecycleOwner(this)
 
         val viewModel = getViewModel<MainViewModel> {
-            parametersOf(intent.data.path.substring(1))
+            parametersOf(intent.data.path.substring(1)) // [syk] parametersOf를 통해 스트림 넘겨줌 cf.SearchActivity
+            // >> Koin에서 주입하는 객체를 가지고 올 때, 꼭 거기 정의된 값들로만 안의 생성자를 담을 수 있는 것이 아니므로
+            //    여기서 내 해당 데이터 가지고 오려고 할 때 값을 넣어서 initialize가능 >> 현재 받은 username을 넘겨줌
         }
+
         binding.viewModel = viewModel
 
+        /**
+         * [람다함수를 넘겨서 값으로 Setter해주려고 했으나 DataBiding에서 안되므로 편의상 처리한 코드]
+         * 1) onclick, homebutton이 표출되었을 때,  [syk]]
+         */
         actionbarInit(binding.toolbar, onClickHomeButton = {
-            viewModel.input.clickHomeButton()
+            viewModel.input.clickHomeButton() // 2) Viewmodel의 'onClickHomeButton'을 클릭 [syk]]
         })
 
+        /**
+         * Router쪽을 Biding시킨 것
+         */
         with(viewModel.output) {
+            // refreshListData()가 왔을 때, recyclerView.adapter를 갱신시켜라
             refreshListData().observe { (user, repos) ->
                 binding.recyclerView.adapter = MainListAdapter(
                     user,
@@ -44,7 +56,11 @@ class MainActivity : BaseActivity() {
                     viewModel.input::clickRepo
                 )
             }
+
+            // 에러토스트 왔을 때 토스트 띄워라
             showErrorToast().observe { showToast(it) }
+
+            // ProfileActivity나 시그널 왔을 떄 액티비티 이동시켜라
             goProfileActivity().observe {
                 startActivity(
                     Intent(
@@ -56,6 +72,8 @@ class MainActivity : BaseActivity() {
             goRepoDetailActivity().observe {
                 RepoDetailActivity.start(this@MainActivity, it.first, it.second)
             }
+
+            // finish()란 게 왔을 떄 화면을 종료시켜라
             finish().observe {
                 onBackPressed()
             }
